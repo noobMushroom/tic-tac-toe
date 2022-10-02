@@ -1,13 +1,61 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+.head{
+    text-align: center;
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.mainDiv{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 10px double black;
+    height: 90vh;
+    width: 90vw;
+}
+
+.choice{
+    width: 70%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.players{
+    display: flex;
+    flex-direction: column;
+}
+
+.players input{
+  width: 400px;
+  height: 40px;
+}
+
 .gameBoardDiv{
+    width: 300px;
     display: grid;
     background-color: red;
     grid-template-columns: repeat(3,1fr);
-    height: 300px;
-    width: 300px;
+
 }
 
 .boardCells{
+    height: 100px;
+    width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content:center;
     background-color:green;
     border: 2px solid black;
 }
+
 

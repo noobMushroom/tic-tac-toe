@@ -1,5 +1,9 @@
-// players
+// todo somehow make a pop up and show winner's name
+// todo make reset button.
+// todo if game is finished declare it was a draw
 
+
+// players
 const Player = (name, marker) => {
    const getName = () => name;
    const getMarker = () => marker;
@@ -11,7 +15,7 @@ const Player = (name, marker) => {
 
 const Board = (() => {
    let moves = ['0', '1', '2', '3', '4', '5', '6', '7', '8']
-   isPressed = false
+   let isPressed = false
    let marker = ''
    const showDiv = document.getElementById("tic-tac-toe");
    const gameBoardDiv = document.createElement('div');
@@ -26,7 +30,7 @@ const Board = (() => {
       gameBoardDiv.appendChild(boardDiv);
    }
 
-   const turn = () => {
+   const turn = (arr) => {
       if (isPressed == false) {
          marker = "X"
          return isPressed = true;
@@ -40,43 +44,43 @@ const Board = (() => {
       buttons.forEach(element => {
          element.addEventListener('click', () => {
             turn()
-            logic.input(element, marker, moves)
+            Logic.input(element, marker, moves)
+            Logic.whoWon(showDiv)
          })
       });
    }
-   return { Cells}
+   return { Cells }
 
 });
 
 
 
-const logic = (() => {
+
+const Logic = (() => {
+   let winner = ''
    const checker = arr => arr.every(v => v === arr[0])
+   const whoWon = (div) => {
+      if (winner != '') {
+         div.innerHTML = `Player ${winner} won`
+      }
+   }
    const Winner = (moves) => {
       if (checker([moves[0], moves[1], moves[2]])) {
-         console.log("won at 1 round")
-         return true, moves[0]
+         return winner = moves[0]
       } else if (checker([moves[3], moves[4], moves[5]])) {
-         console.log("won at 2 round")
-         return true, moves[3]
+         return winner = moves[3]
       } else if (checker([moves[6], moves[7], moves[8]])) {
-         console.log("won at 3 round")
-         return true
+         return winner = moves[6]
       } else if (checker([moves[0], moves[3], moves[6]])) {
-         console.log("won at 4 round")
-         return true
+         return winner = moves[0]
       } else if (checker([moves[1], moves[4], moves[7]])) {
-         console.log("won at 5 round")
-         return true
+         return winner = moves[1]
       } else if (checker([moves[2], moves[5], moves[8]])) {
-         console.log("won at 6 round")
-         return true
+         return winner = moves[2]
       } else if (checker([moves[0], moves[4], moves[8]])) {
-         console.log("won at 7 round")
-         return true
+         return winner = moves[0]
       } else if (checker([moves[6], moves[4], moves[2]])) {
-         console.log("won at 8 round")
-         return true
+         return winner = moves[6]
       } else {
          console.log('draw')
          return "draw"
@@ -84,44 +88,53 @@ const logic = (() => {
    }
    // *button click function
    const input = (e, marker, moves) => {
-      if (marker === "X") {
-         e.style.background = 'red'
-      } else if (marker === 'O') {
-         e.style.background = 'aqua'
-      }
+      console.log('this is winner from input', winner)
       if (e.click == true) {
-         e.innerHTML = marker
          moves[e.value] = marker
          e.click = false
          Winner(moves)
+         if (marker === "X") {
+            e.innerHTML = '<img src="images/x.jpg" height="100%" width="100%" >'
+         } else if (marker === 'O') {
+            e.innerHTML = '<img src="images/O.png" height="100%" width="100%">'
+         }
       }
    }
-
-   return { input }
+   return { input, whoWon }
 })()
 
 
 
 const GameBoard = (() => {
+   let players = []
+
    const showDiv = document.getElementById("tic-tac-toe")
-   const player = Player('some', "X")
-   const opponent = Player('Bot', "O")
+
+   const makePlayers = () => {
+      const xPlayer = document.getElementById('xPlayer')
+      const oPlayer = document.getElementById('oPlayer')
+      const player = Player(xPlayer.value, xPlayer.name)
+      players.push(player)
+      const opponent = Player(oPlayer.value, oPlayer.name)
+      players.push(opponent)
+   }
+
    const setBoard = () => {
+      makePlayers()
       let board = Board()
-      showDiv.innerHTML = `player name: ${player.name}, marker:${player.marker} <br>  opponent name: ${opponent.name}, opponent:${opponent.marker} <br>`
+      showDiv.innerHTML = `${(players[0].name).toUpperCase()} ${players[0].marker} <br>   ${(players[1].name).toUpperCase()}, ${players[1].marker} <br>`
       Board()
       board.Cells()
    }
    const Game = () => {
       const startBtn = document.getElementById('startBtn')
-      let isGameBoard = true;
       startBtn.addEventListener("click", () => {
          startBtn.innerHTML = "restart"
          setBoard()
+         console.log(players)
       })
    }
    return { Game }
-
 })();
 
 

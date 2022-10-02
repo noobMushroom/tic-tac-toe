@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,10 +9,26 @@
     <script src="script.js" defer></script>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <header><h1>Tic Tac Toe</h1>
-    <h1>By Mushroom</h1></header>
-    <div id="tic-tac-toe"></div>
-    <button id="startBtn">Start game</button>   
+    <header class="head">
+        <h1>Tic Tac Toe <i><u>By Mushroom</u></i></h1>
+    </header>
+    <div class="container">
+        <div id="tic-tac-toe" class="mainDiv">
+            <div class="choice">
+                <div class="players">
+                    <label for="xPlayer">X Player Name:</label>
+                    <input type="text" id="xPlayer" class="player" name="x">
+                </div>
+                <div class="players">
+                    <label for="oPlayer">O Player Name:</label>
+                    <input type="text" id="oPlayer" class="player" name="o">
+                </div>
+            </div>
+            <button id="startBtn">Start game</button>
+        </div>
+    </div>
 </body>
+
 </html>
