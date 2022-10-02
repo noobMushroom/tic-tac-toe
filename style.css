@@ -1,0 +1,13 @@
+.gameBoardDiv{
+    display: grid;
+    background-color: red;
+    grid-template-columns: repeat(3,1fr);
+    height: 300px;
+    width: 300px;
+}
+
+.boardCells{
+    background-color:green;
+    border: 2px solid black;
+}
+
