@@ -13,6 +13,7 @@ const Player = (name, marker) => {
    }
 }
 
+
 const Board = (() => {
    let moves = ['0', '1', '2', '3', '4', '5', '6', '7', '8']
    let isPressed = false
@@ -22,15 +23,17 @@ const Board = (() => {
    showDiv.appendChild(gameBoardDiv);
    gameBoardDiv.classList.add('gameBoardDiv');
 
-   for (let i = 0; i <= 8; i++) {
-      const boardDiv = document.createElement("div");
-      boardDiv.value = i
-      boardDiv.click = true;
-      boardDiv.classList.add('boardCells')
-      gameBoardDiv.appendChild(boardDiv);
+   const board = () => {
+      for (let i = 0; i <= 8; i++) {
+         const boardDiv = document.createElement("div");
+         boardDiv.value = i
+         boardDiv.click = true;
+         boardDiv.classList.add('boardCells')
+         gameBoardDiv.appendChild(boardDiv);
+      }
    }
 
-   const turn = (arr) => {
+   const turn = () => {
       if (isPressed == false) {
          marker = "X"
          return isPressed = true;
@@ -45,23 +48,54 @@ const Board = (() => {
          element.addEventListener('click', () => {
             turn()
             Logic.input(element, marker, moves)
-            Logic.whoWon(showDiv)
+            Logic.whoWon()
          })
       });
    }
-   return { Cells }
+   return { board, Cells }
 
-});
-
+})();
 
 
 
 const Logic = (() => {
    let winner = ''
+   let players = []
+
    const checker = arr => arr.every(v => v === arr[0])
-   const whoWon = (div) => {
+
+   const createPlayers = () => {
+      const showDiv = document.getElementById("tic-tac-toe");
+      const xPlayer = document.getElementById('xPlayer')
+      const oPlayer = document.getElementById('oPlayer')
+      const player = Player(xPlayer.value, xPlayer.name)
+      players.push(player)
+      const opponent = Player(oPlayer.value, oPlayer.name)
+      players.push(opponent)
+      const playersDiv = document.createElement("div");
+      const opponentDiv = document.createElement("div");
+      playersDiv.innerHTML = `${player.name} ${player.marker}`
+      opponentDiv.innerHTML = `${opponent.name} ${opponent.marker}`
+      showDiv.appendChild(playersDiv)
+      showDiv.appendChild(opponentDiv)
+   };
+
+   const resetBtn = () => {
+      const showDiv = document.getElementById("tic-tac-toe");
+      const reset = document.createElement("button")
+      showDiv.appendChild(reset)
+      reset.innerHTML = 'NEW GAME'
+      reset.addEventListener('click', () => {
+         showDiv.innerHTML=''
+         GameBoard.setBoard()
+      })
+   }
+
+   const whoWon = () => {
       if (winner != '') {
-         div.innerHTML = `Player ${winner} won`
+         const showDiv = document.getElementById("tic-tac-toe")
+         showDiv.innerHTML = winner
+         resetBtn
       }
    }
    const Winner = (moves) => {
@@ -82,13 +116,13 @@ const Logic = (() => {
       } else if (checker([moves[6], moves[4], moves[2]])) {
          return winner = moves[6]
       } else {
-         console.log('draw')
+         ('draw')
          return "draw"
       }
    }
    // *button click function
    const input = (e, marker, moves) => {
-      console.log('this is winner from input', winner)
+      ('this is winner from input', winner)
       if (e.click == true) {
          moves[e.value] = marker
          e.click = false
@@ -100,41 +134,31 @@ const Logic = (() => {
          }
       }
    }
-   return { input, whoWon }
+
+   return { input, whoWon, createPlayers }
 })()
 
 
 
 const GameBoard = (() => {
-   let players = []
 
-   const showDiv = document.getElementById("tic-tac-toe")
-
-   const makePlayers = () => {
-      const xPlayer = document.getElementById('xPlayer')
-      const oPlayer = document.getElementById('oPlayer')
-      const player = Player(xPlayer.value, xPlayer.name)
-      players.push(player)
-      const opponent = Player(oPlayer.value, oPlayer.name)
-      players.push(opponent)
-   }
-
+   const btn = document.getElementById('start')
    const setBoard = () => {
-      makePlayers()
-      let board = Board()
-      showDiv.innerHTML = `${(players[0].name).toUpperCase()} ${players[0].marker} <br>   ${(players[1].name).toUpperCase()}, ${players[1].marker} <br>`
-      Board()
-      board.Cells()
+      const inputDiv= document.getElementById('playersDiv')
+      Board.board()
+      Board.Cells()
+      Logic.createPlayers()
+      inputDiv.innerHTML=''
+      btn.innerHTML = ''
    }
    const Game = () => {
       const startBtn = document.getElementById('startBtn')
       startBtn.addEventListener("click", () => {
-         startBtn.innerHTML = "restart"
          setBoard()
-         console.log(players)
       })
    }
    return { Game }
+
 })();
 
 
