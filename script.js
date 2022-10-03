@@ -1,16 +1,23 @@
-// todo somehow make a pop up and show winner's name
-// todo make reset button.
+// todo last scary task in js is to start game again
 
 
 // this function will create players
-const Player = (name, marker) => {
+const Player = (name, marker, round) => {
    const getName = () => name;
    const getMarker = () => marker;
+   const totalRoundWon=()=>round
+   
    return {
       name: getName(),
-      marker: getMarker()
+      marker: getMarker(),
+      roundWon:totalRoundWon()
    }
 }
+
+
+
+
+
 
 // this function customize board
 const Board = (() => {
@@ -25,7 +32,7 @@ const Board = (() => {
     showDiv.appendChild(gameBoardDiv);
     gameBoardDiv.classList.add('gameBoardDiv');
 
-    // grabbing input divs to take their values
+    // grabbing input divs to take their values for users name
     const xPlayer = document.getElementById('xPlayer')
     const oPlayer = document.getElementById('oPlayer')
 
@@ -34,6 +41,8 @@ const Board = (() => {
     playersDiv.classList.add('playersDiv')
     const opponentDiv = document.createElement("div");
     opponentDiv.classList.add('opponentDiv')
+    showDiv.appendChild(playersDiv)
+    showDiv.appendChild(opponentDiv) 
 
    //*moves array to input players move
    let moves = ['', '', '', '', '', '', '', '', '']
@@ -64,15 +73,17 @@ const Board = (() => {
 
    // this function creates div and push players value on the players array
    const createPlayers = () => {
-      const player = Player(xPlayer.value, xPlayer.name)
+      const player = Player(xPlayer.value, xPlayer.name , 0)
       players.push(player)
-      const opponent = Player(oPlayer.value, oPlayer.name)
-      players.push(opponent)
-      showDiv.appendChild(playersDiv)
-      showDiv.appendChild(opponentDiv)   
-      playersDiv.innerHTML = `${(player.name).toUpperCase()} ${player.marker}`
-      opponentDiv.innerHTML = `${(opponent.name).toUpperCase()} ${opponent.marker}`
+      const opponent = Player(oPlayer.value, oPlayer.name, 0)
+      players.push(opponent)  
    };
+
+   // function to display to show player info in the display
+   const showPlayerInfo=()=>{
+      playersDiv.innerHTML = `${(players[0].name).toUpperCase()} ${players[0].marker} ${players[0].roundWon}`
+      opponentDiv.innerHTML = `${(players[1].name).toUpperCase()} ${players[1].marker} ${players[1].roundWon}`
+   }
 
   
 
@@ -87,11 +98,10 @@ const Board = (() => {
       const winnerDiv=document.getElementById("popUp")
       reset.addEventListener('click', () => {
          winnerDiv.classList.remove("open-popup")
-         console.log('clicked')
          gameBoardDiv.innerHTML=''
          board()
          Cells()
-
+         showPlayerInfo()
       })
    }
 
@@ -138,7 +148,7 @@ const Board = (() => {
          })
       });
    }
-   return { board, Cells, resetBtn, createPlayers }
+   return { board, Cells, resetBtn, createPlayers, showPlayerInfo }
 
 })();
 
@@ -161,9 +171,11 @@ const Logic = (() => {
          Board.resetBtn()
          if (winner === "X") {
             winner=''
+            players[0].roundWon+=1
             winnerName.innerHTML = `Hurray! ${(players[0].name).toUpperCase()} Won congratulations`           
          } else if (winner === "O") {
             winner=''
+            players[1].roundWon+=1
             winnerName.innerHTML = `Hurray! ${(players[1].name).toUpperCase()} Won congratulations`          
          }else if (winner === "draw") {
             winner=''
@@ -251,6 +263,7 @@ const GameBoard = (() => {
    const setBoard = () => {
       const inputDiv = document.getElementById('playersDiv')
       Board.createPlayers()
+      Board.showPlayerInfo()
       Board.board()
       Board.Cells()
       inputDiv.innerHTML = ''
