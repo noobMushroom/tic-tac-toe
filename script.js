@@ -78,19 +78,19 @@ const Board = (() => {
 
    //* restart button
 
-   const resetBoard = () => {
-
-   }
-
    const resetBtn = () => {
       moves = ['', '', '', '', '', '', '', '', '']
-      const showDiv = document.getElementById("tic-tac-toe");
-      const reset = document.createElement("button")
-      showDiv.appendChild(reset)
-      reset.innerHTML = 'NEW GAME'
+
+      // reset button from popup 
+      const reset = document.getElementById("new_round")
+      // popup div
+      const winnerDiv=document.getElementById("popUp")
       reset.addEventListener('click', () => {
-         Board.board()
-         Board.Cells()
+         winnerDiv.classList.remove("open-popup")
+         console.log('clicked')
+         gameBoardDiv.innerHTML=''
+         board()
+         Cells()
 
       })
    }
@@ -122,7 +122,10 @@ const Board = (() => {
    const Cells = () => {
 
       // initially setting first player color
-      playersDiv.style.color='red'
+      if (isPressed==false){
+
+         playersDiv.style.color='red'
+      }   
 
       // grabbing buttons/cells 
       const buttons = document.querySelectorAll('.boardCells')
@@ -144,21 +147,27 @@ const Board = (() => {
 // *this function checks the logic the game. 
 const Logic = (() => {
    let winner = ''// checks who won
+   let round=0//displays the number of round
 
    // this function show's the winner name on the display and takes array as an argument
    const whoWon = (players) => {
       if (winner != '') {
-         const showDiv = document.getElementById("tic-tac-toe")
+         round+=1
+         const winnerDiv=document.getElementById("popUp")
+         const winnerName=document.getElementById("winner")
+         const roundDiv=document.getElementById("round")
+         roundDiv.innerHTML=round
+         winnerDiv.classList.add("open-popup")
+         Board.resetBtn()
          if (winner === "X") {
-            showDiv.innerHTML = `Hurray! ${(players[0].name).toUpperCase()} Won congratulations`
-            Board.resetBtn()
-
+            winner=''
+            winnerName.innerHTML = `Hurray! ${(players[0].name).toUpperCase()} Won congratulations`           
          } else if (winner === "O") {
-            showDiv.innerHTML = `Hurray! ${(players[1].name).toUpperCase()} Won congratulations`
-            Board.resetBtn()
+            winner=''
+            winnerName.innerHTML = `Hurray! ${(players[1].name).toUpperCase()} Won congratulations`          
          }else if (winner === "draw") {
-            showDiv.innerHTML = `It was a draw`
-            Board.resetBtn()
+            winner=''
+            winnerName.innerHTML = `It was a draw`           
          }
       }
    }
