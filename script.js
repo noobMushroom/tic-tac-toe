@@ -1,6 +1,5 @@
 // todo somehow make a pop up and show winner's name
 // todo make reset button.
-// todo if game is finished declare it was a draw
 
 
 // players
@@ -15,13 +14,66 @@ const Player = (name, marker) => {
 
 
 const Board = (() => {
-   let moves = ['0', '1', '2', '3', '4', '5', '6', '7', '8']
+   let moves = ['', '', '', '', '', '', '', '', '']
    let isPressed = false
    let marker = ''
+
+
+   //* Players
+   let players = []
+   let current_player=''
+
+
+   const currentPlayer=(marker)=>{
+      current_player=players[0].name
+      if (marker==='X'){
+         current_player=players[0].name
+         console.log(current_player)
+      }else if(marker==="O"){
+         current_player=players[1].name
+         console.log(current_player)
+      }
+   }
+
+   const createPlayers = () => {
+      const showDiv = document.getElementById("tic-tac-toe");
+      const xPlayer = document.getElementById('xPlayer')
+      const oPlayer = document.getElementById('oPlayer')
+      const player = Player(xPlayer.value, xPlayer.name)
+      players.push(player)
+      const opponent = Player(oPlayer.value, oPlayer.name)
+      players.push(opponent)
+      const playersDiv = document.createElement("div");
+      const opponentDiv = document.createElement("div");
+      playersDiv.innerHTML = `${(player.name).toUpperCase()} ${player.marker}`
+      opponentDiv.innerHTML = `${(opponent.name).toUpperCase()} ${opponent.marker}`
+      showDiv.appendChild(playersDiv)
+      showDiv.appendChild(opponentDiv)
+   };
+
    const showDiv = document.getElementById("tic-tac-toe");
    const gameBoardDiv = document.createElement('div');
    showDiv.appendChild(gameBoardDiv);
    gameBoardDiv.classList.add('gameBoardDiv');
+
+   //* restart button
+
+   const resetBoard = () => {
+
+   }
+
+   const resetBtn = () => {
+      moves = ['', '', '', '', '', '', '', '', '']
+      const showDiv = document.getElementById("tic-tac-toe");
+      const reset = document.createElement("button")
+      showDiv.appendChild(reset)
+      reset.innerHTML = 'NEW GAME'
+      reset.addEventListener('click', () => {
+         Board.board()
+         Board.Cells()
+
+      })
+   }
 
    const board = () => {
       for (let i = 0; i <= 8; i++) {
@@ -48,11 +100,11 @@ const Board = (() => {
          element.addEventListener('click', () => {
             turn()
             Logic.input(element, marker, moves)
-            Logic.whoWon()
+            Logic.whoWon(players)
          })
       });
    }
-   return { board, Cells }
+   return { board, Cells, resetBtn, createPlayers }
 
 })();
 
@@ -60,66 +112,74 @@ const Board = (() => {
 
 const Logic = (() => {
    let winner = ''
-   let players = []
 
-   const checker = arr => arr.every(v => v === arr[0])
+   
 
-   const createPlayers = () => {
-      const showDiv = document.getElementById("tic-tac-toe");
-      const xPlayer = document.getElementById('xPlayer')
-      const oPlayer = document.getElementById('oPlayer')
-      const player = Player(xPlayer.value, xPlayer.name)
-      players.push(player)
-      const opponent = Player(oPlayer.value, oPlayer.name)
-      players.push(opponent)
-      const playersDiv = document.createElement("div");
-      const opponentDiv = document.createElement("div");
-      playersDiv.innerHTML = `${player.name} ${player.marker}`
-      opponentDiv.innerHTML = `${opponent.name} ${opponent.marker}`
-      showDiv.appendChild(playersDiv)
-      showDiv.appendChild(opponentDiv)
-   };
-
-   const resetBtn = () => {
-      const showDiv = document.getElementById("tic-tac-toe");
-      const reset = document.createElement("button")
-      showDiv.appendChild(reset)
-      reset.innerHTML = 'NEW GAME'
-      reset.addEventListener('click', () => {
-         showDiv.innerHTML=''
-         GameBoard.setBoard()
-      })
-   }
-
-   const whoWon = () => {
+   const whoWon = (players) => {
       if (winner != '') {
          const showDiv = document.getElementById("tic-tac-toe")
-         showDiv.innerHTML = winner
-         resetBtn
+         if (winner === "X") {
+            showDiv.innerHTML = `Hurray! ${(players[0].name).toUpperCase()} Won congratulations`
+            Board.resetBtn()
+
+         } else if (winner === "O") {
+            showDiv.innerHTML = `Hurray! ${(players[1].name).toUpperCase()} Won congratulations`
+            Board.resetBtn()
+         }else if (winner === "draw") {
+            showDiv.innerHTML = `It was a draw`
+            Board.resetBtn()
+         }
       }
    }
+
+   const checker = arr => arr.every(v => v === arr[0])
    const Winner = (moves) => {
-      if (checker([moves[0], moves[1], moves[2]])) {
-         return winner = moves[0]
-      } else if (checker([moves[3], moves[4], moves[5]])) {
-         return winner = moves[3]
-      } else if (checker([moves[6], moves[7], moves[8]])) {
-         return winner = moves[6]
-      } else if (checker([moves[0], moves[3], moves[6]])) {
-         return winner = moves[0]
-      } else if (checker([moves[1], moves[4], moves[7]])) {
-         return winner = moves[1]
-      } else if (checker([moves[2], moves[5], moves[8]])) {
-         return winner = moves[2]
-      } else if (checker([moves[0], moves[4], moves[8]])) {
-         return winner = moves[0]
-      } else if (checker([moves[6], moves[4], moves[2]])) {
-         return winner = moves[6]
-      } else {
-         ('draw')
-         return "draw"
+      if (moves[0] && moves[1] && moves[2] != '') {
+         if (checker([moves[0], moves[1], moves[2]])) {
+            return winner = moves[0]
+         }
+      }
+      if (moves[3] && moves[4] && moves[5]) {
+         if (checker([moves[3], moves[4], moves[5]])) {
+            return winner = moves[3]
+         }
+      }
+      if (moves[6] && moves[7] && moves[8] != '') {
+         if (checker([moves[6], moves[7], moves[8]])) {
+            return winner = moves[6]
+         }
+      }
+      if (moves[0] && moves[3] && moves[6] != '') {
+         if (checker([moves[0], moves[3], moves[6]])) {
+            return winner = moves[0]
+         }
+      }
+      if (moves[1] && moves[4] && moves[7] != '') {
+         if (checker([moves[1], moves[4], moves[7]])) {
+            return winner = moves[1]
+         }
+      }
+      if (moves[2] && moves[5] && moves[8] != '') {
+         if (checker([moves[2], moves[5], moves[8]])) {
+            return winner = moves[2]
+         }
+      }
+      if (moves[0] && moves[4] && moves[8] != '') {
+         if (checker([moves[0], moves[4], moves[8]])) {
+            return winner = moves[0]
+         }
+      }
+      if (moves[6] && moves[4] && moves[2] != '') {
+         if (checker([moves[6], moves[4], moves[2]])) {
+            return winner = moves[6]
+         }
+      }
+      if (moves[0] && moves[1] && moves[2] && moves[3] && moves[4] && moves[5] && moves[6] && moves[7] && moves[8] != '') {
+         return winner = "draw"
       }
    }
+
+
    // *button click function
    const input = (e, marker, moves) => {
       ('this is winner from input', winner)
@@ -135,7 +195,7 @@ const Logic = (() => {
       }
    }
 
-   return { input, whoWon, createPlayers }
+   return { input, whoWon }
 })()
 
 
@@ -144,11 +204,11 @@ const GameBoard = (() => {
 
    const btn = document.getElementById('start')
    const setBoard = () => {
-      const inputDiv= document.getElementById('playersDiv')
+      const inputDiv = document.getElementById('playersDiv')
+      Board.createPlayers()
       Board.board()
       Board.Cells()
-      Logic.createPlayers()
-      inputDiv.innerHTML=''
+      inputDiv.innerHTML = ''
       btn.innerHTML = ''
    }
    const Game = () => {
