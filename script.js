@@ -2,7 +2,7 @@
 // todo make reset button.
 
 
-// players
+// this function will create players
 const Player = (name, marker) => {
    const getName = () => name;
    const getMarker = () => marker;
@@ -12,49 +12,69 @@ const Player = (name, marker) => {
    }
 }
 
-
+// this function customize board
 const Board = (() => {
+
+    //*grabbing important html divs and creating divs for name of players.
+
+    // this is the main div
+    const showDiv = document.getElementById("tic-tac-toe");
+
+    // creating gameBoardDiv this will contain small cells or boxes
+    const gameBoardDiv = document.createElement('div');
+    showDiv.appendChild(gameBoardDiv);
+    gameBoardDiv.classList.add('gameBoardDiv');
+
+    // grabbing input divs to take their values
+    const xPlayer = document.getElementById('xPlayer')
+    const oPlayer = document.getElementById('oPlayer')
+
+    //creating element to show name and marker on the display 
+    const playersDiv = document.createElement("div");
+    playersDiv.classList.add('playersDiv')
+    const opponentDiv = document.createElement("div");
+    opponentDiv.classList.add('opponentDiv')
+
+   //*moves array to input players move
    let moves = ['', '', '', '', '', '', '', '', '']
+
+   // this decide marker if it's false marker will be X and if it's true marker will be O
    let isPressed = false
+
+   // value of marker
    let marker = ''
 
 
-   //* Players
+   //* Players array this will have players information
    let players = []
-   let current_player=''
+   
 
-
-   const currentPlayer=(marker)=>{
-      current_player=players[0].name
-      if (marker==='X'){
-         current_player=players[0].name
-         console.log(current_player)
-      }else if(marker==="O"){
-         current_player=players[1].name
-         console.log(current_player)
+   // this function shows the color of player of current player on the screen. 
+   const currentPlayer=()=>{
+      let current_player=marker//setting current player as marker which will be X and O      
+      if (current_player==='O'){
+         opponentDiv.style.color=''
+         playersDiv.style.color='red'       
+      }else if(current_player==="X"){
+         playersDiv.style.color=''
+         opponentDiv.style.color='red'
       }
+
    }
 
+   // this function creates div and push players value on the players array
    const createPlayers = () => {
-      const showDiv = document.getElementById("tic-tac-toe");
-      const xPlayer = document.getElementById('xPlayer')
-      const oPlayer = document.getElementById('oPlayer')
       const player = Player(xPlayer.value, xPlayer.name)
       players.push(player)
       const opponent = Player(oPlayer.value, oPlayer.name)
       players.push(opponent)
-      const playersDiv = document.createElement("div");
-      const opponentDiv = document.createElement("div");
+      showDiv.appendChild(playersDiv)
+      showDiv.appendChild(opponentDiv)   
       playersDiv.innerHTML = `${(player.name).toUpperCase()} ${player.marker}`
       opponentDiv.innerHTML = `${(opponent.name).toUpperCase()} ${opponent.marker}`
-      showDiv.appendChild(playersDiv)
-      showDiv.appendChild(opponentDiv)
    };
 
-   const showDiv = document.getElementById("tic-tac-toe");
-   const gameBoardDiv = document.createElement('div');
-   showDiv.appendChild(gameBoardDiv);
-   gameBoardDiv.classList.add('gameBoardDiv');
+  
 
    //* restart button
 
@@ -75,6 +95,7 @@ const Board = (() => {
       })
    }
 
+   //*this function makes game board
    const board = () => {
       for (let i = 0; i <= 8; i++) {
          const boardDiv = document.createElement("div");
@@ -85,6 +106,8 @@ const Board = (() => {
       }
    }
 
+
+   // this function switches players turns 
    const turn = () => {
       if (isPressed == false) {
          marker = "X"
@@ -94,13 +117,21 @@ const Board = (() => {
          return isPressed = false;
       }
    }
+
+   // this function is for divs clicks and do different tasks 
    const Cells = () => {
+
+      // initially setting first player color
+      playersDiv.style.color='red'
+
+      // grabbing buttons/cells 
       const buttons = document.querySelectorAll('.boardCells')
       buttons.forEach(element => {
          element.addEventListener('click', () => {
-            turn()
+            turn()// calling turn function to check which player turn 
+            currentPlayer()
             Logic.input(element, marker, moves)
-            Logic.whoWon(players)
+            Logic.whoWon(players)// checking who won and passing players array 
          })
       });
    }
@@ -110,11 +141,11 @@ const Board = (() => {
 
 
 
+// *this function checks the logic the game. 
 const Logic = (() => {
-   let winner = ''
+   let winner = ''// checks who won
 
-   
-
+   // this function show's the winner name on the display and takes array as an argument
    const whoWon = (players) => {
       if (winner != '') {
          const showDiv = document.getElementById("tic-tac-toe")
@@ -132,7 +163,10 @@ const Logic = (() => {
       }
    }
 
+   //this function checks if the array is equal
    const checker = arr => arr.every(v => v === arr[0])
+
+   // this function checks all the winning possibilities and returns the winner or draw
    const Winner = (moves) => {
       if (moves[0] && moves[1] && moves[2] != '') {
          if (checker([moves[0], moves[1], moves[2]])) {
@@ -180,9 +214,9 @@ const Logic = (() => {
    }
 
 
-   // *button click function
+   // *this function changes the inner html of buttons/cells of game board and change the value of moves array(log the moves in moves array) and changes the value of click so the button is disabled. and it also call winner function and checks if someone won.
+
    const input = (e, marker, moves) => {
-      ('this is winner from input', winner)
       if (e.click == true) {
          moves[e.value] = marker
          e.click = false
@@ -199,10 +233,12 @@ const Logic = (() => {
 })()
 
 
-
+// this function sets the board 
 const GameBoard = (() => {
 
    const btn = document.getElementById('start')
+
+   // this function sets the board and calls different functions 
    const setBoard = () => {
       const inputDiv = document.getElementById('playersDiv')
       Board.createPlayers()
