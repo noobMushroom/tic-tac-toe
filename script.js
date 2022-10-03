@@ -5,12 +5,12 @@
 const Player = (name, marker, round) => {
    const getName = () => name;
    const getMarker = () => marker;
-   const totalRoundWon=()=>round
-   
+   const totalRoundWon = () => round
+
    return {
       name: getName(),
       marker: getMarker(),
-      roundWon:totalRoundWon()
+      roundWon: totalRoundWon()
    }
 }
 
@@ -22,27 +22,27 @@ const Player = (name, marker, round) => {
 // this function customize board
 const Board = (() => {
 
-    //*grabbing important html divs and creating divs for name of players.
+   //*grabbing important html divs and creating divs for name of players.
 
-    // this is the main div
-    const showDiv = document.getElementById("tic-tac-toe");
+   // this is the main div
+   const showDiv = document.getElementById("tic-tac-toe");
 
-    // creating gameBoardDiv this will contain small cells or boxes
-    const gameBoardDiv = document.createElement('div');
-    showDiv.appendChild(gameBoardDiv);
-    gameBoardDiv.classList.add('gameBoardDiv');
+   // creating gameBoardDiv this will contain small cells or boxes
+   const gameBoardDiv = document.createElement('div');
+   showDiv.appendChild(gameBoardDiv);
+   gameBoardDiv.classList.add('gameBoardDiv');
 
-    // grabbing input divs to take their values for users name
-    const xPlayer = document.getElementById('xPlayer')
-    const oPlayer = document.getElementById('oPlayer')
+   // grabbing input divs to take their values for users name
+   const xPlayer = document.getElementById('xPlayer')
+   const oPlayer = document.getElementById('oPlayer')
 
-    //creating element to show name and marker on the display 
-    const playersDiv = document.createElement("div");
-    playersDiv.classList.add('playersDiv')
-    const opponentDiv = document.createElement("div");
-    opponentDiv.classList.add('opponentDiv')
-    showDiv.appendChild(playersDiv)
-    showDiv.appendChild(opponentDiv) 
+   //creating element to show name and marker on the display 
+   const playersDiv = document.createElement("div");
+   playersDiv.classList.add('playersDiv')
+   const opponentDiv = document.createElement("div");
+   opponentDiv.classList.add('opponentDiv')
+   showDiv.appendChild(playersDiv)
+   showDiv.appendChild(opponentDiv)
 
    //*moves array to input players move
    let moves = ['', '', '', '', '', '', '', '', '']
@@ -56,36 +56,65 @@ const Board = (() => {
 
    //* Players array this will have players information
    let players = []
+
    
 
    // this function shows the color of player of current player on the screen. 
-   const currentPlayer=()=>{
-      let current_player=marker//setting current player as marker which will be X and O      
-      if (current_player==='O'){
-         opponentDiv.style.color=''
-         playersDiv.style.color='red'       
-      }else if(current_player==="X"){
-         playersDiv.style.color=''
-         opponentDiv.style.color='red'
+   const currentPlayer = () => {
+      let current_player = marker//setting current player as marker which will be X and O      
+      if (current_player === 'O') {
+         opponentDiv.style.color = ''
+         playersDiv.style.color = 'red'
+      } else if (current_player === "X") {
+         playersDiv.style.color = ''
+         opponentDiv.style.color = 'red'
       }
 
    }
 
    // this function creates div and push players value on the players array
    const createPlayers = () => {
-      const player = Player(xPlayer.value, xPlayer.name , 0)
+      const player = Player(xPlayer.value, xPlayer.name, 0)
       players.push(player)
       const opponent = Player(oPlayer.value, oPlayer.name, 0)
-      players.push(opponent)  
+      players.push(opponent)
    };
 
    // function to display to show player info in the display
-   const showPlayerInfo=()=>{
+   const showPlayerInfo = () => {
       playersDiv.innerHTML = `${(players[0].name).toUpperCase()} ${players[0].marker} ${players[0].roundWon}`
       opponentDiv.innerHTML = `${(players[1].name).toUpperCase()} ${players[1].marker} ${players[1].roundWon}`
    }
 
-  
+
+   //hopefully this will be able to start new game
+   const newGame = (round) => {
+      const winnerDiv = document.getElementById("popUp")
+      const new_game = document.getElementById('new_game')
+      const playersDiv = document.getElementById('playersDiv')
+      const startGameBtn = document.getElementById("startGame")
+
+      new_game.addEventListener("click", () => {
+         winnerDiv.classList.remove("open-popup")
+         playersDiv.classList.add('choice-popup')
+         startGameBtn.addEventListener('click', () => {
+            isPressed=false
+            round=0
+            players=[]
+            moves=['', '', '', '', '', '', '', '', '']
+            playersDiv.innerHTML=''
+            opponentDiv.innerHTML=''
+            playersDiv.classList.remove("choice-popup")
+            console.log("i am the inner sole")
+            gameBoardDiv.innerHTML = ''
+            createPlayers()
+            showPlayerInfo()
+            board()
+            Cells()
+         })
+      })
+   };
+
 
    //* restart button
 
@@ -95,15 +124,16 @@ const Board = (() => {
       // reset button from popup 
       const reset = document.getElementById("new_round")
       // popup div
-      const winnerDiv=document.getElementById("popUp")
+      const winnerDiv = document.getElementById("popUp")
       reset.addEventListener('click', () => {
          winnerDiv.classList.remove("open-popup")
-         gameBoardDiv.innerHTML=''
+         gameBoardDiv.innerHTML = ''
          board()
          Cells()
          showPlayerInfo()
       })
    }
+
 
    //*this function makes game board
    const board = () => {
@@ -132,10 +162,10 @@ const Board = (() => {
    const Cells = () => {
 
       // initially setting first player color
-      if (isPressed==false){
+      if (isPressed == false) {
 
-         playersDiv.style.color='red'
-      }   
+         playersDiv.style.color = 'red'
+      }
 
       // grabbing buttons/cells 
       const buttons = document.querySelectorAll('.boardCells')
@@ -148,7 +178,7 @@ const Board = (() => {
          })
       });
    }
-   return { board, Cells, resetBtn, createPlayers, showPlayerInfo }
+   return { board, Cells, resetBtn, createPlayers, showPlayerInfo, newGame }
 
 })();
 
@@ -157,29 +187,37 @@ const Board = (() => {
 // *this function checks the logic the game. 
 const Logic = (() => {
    let winner = ''// checks who won
-   let round=0//displays the number of round
+   
+   // number of rounds
+   let round = 0//displays the number of round
+
+   
 
    // this function show's the winner name on the display and takes array as an argument
    const whoWon = (players) => {
       if (winner != '') {
-         round+=1
-         const winnerDiv=document.getElementById("popUp")
-         const winnerName=document.getElementById("winner")
-         const roundDiv=document.getElementById("round")
-         roundDiv.innerHTML=round
+         round += 1 // changing the value of rounds
+         //grabbing important elements to show the winner and round
+         const winnerDiv = document.getElementById("popUp")
+         const winnerName = document.getElementById("winner")
+         const roundDiv = document.getElementById("round")
+         roundDiv.innerHTML = round
          winnerDiv.classList.add("open-popup")
+         // calling reset button functions
          Board.resetBtn()
+         Board.newGame()
+         // changing winner value and changing round won by players
          if (winner === "X") {
-            winner=''
-            players[0].roundWon+=1
-            winnerName.innerHTML = `Hurray! ${(players[0].name).toUpperCase()} Won congratulations`           
+            winner = ''
+            players[0].roundWon += 1
+            winnerName.innerHTML = `Hurray! ${(players[0].name).toUpperCase()} Won congratulations`
          } else if (winner === "O") {
-            winner=''
-            players[1].roundWon+=1
-            winnerName.innerHTML = `Hurray! ${(players[1].name).toUpperCase()} Won congratulations`          
-         }else if (winner === "draw") {
-            winner=''
-            winnerName.innerHTML = `It was a draw`           
+            winner = ''
+            players[1].roundWon += 1
+            winnerName.innerHTML = `Hurray! ${(players[1].name).toUpperCase()} Won congratulations`
+         } else if (winner === "draw") {
+            winner = ''
+            winnerName.innerHTML = `It was a draw`
          }
       }
    }
@@ -254,6 +292,10 @@ const Logic = (() => {
 })()
 
 
+
+
+
+
 // this function sets the board 
 const GameBoard = (() => {
 
@@ -261,23 +303,33 @@ const GameBoard = (() => {
 
    // this function sets the board and calls different functions 
    const setBoard = () => {
-      const inputDiv = document.getElementById('playersDiv')
       Board.createPlayers()
       Board.showPlayerInfo()
       Board.board()
       Board.Cells()
-      inputDiv.innerHTML = ''
       btn.innerHTML = ''
    }
    const Game = () => {
       const startBtn = document.getElementById('startBtn')
+      const playersDiv = document.getElementById('playersDiv')
+
       startBtn.addEventListener("click", () => {
+         playersDiv.classList.add('choice-popup')
+      })
+   }
+
+   const startGame = () => {
+      const startGameBtn = document.getElementById("startGame")
+      const playersDiv = document.getElementById('playersDiv')
+      startGameBtn.addEventListener('click', () => {
+         playersDiv.classList.remove("choice-popup")
          setBoard()
       })
    }
-   return { Game }
+   return { Game, startGame }
 
 })();
 
 
 GameBoard.Game()
+GameBoard.startGame()

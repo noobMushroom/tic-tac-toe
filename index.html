@@ -18,14 +18,16 @@
         <div id="tic-tac-toe" class="mainDiv">
             <div class="choice" id="playersDiv">
                 <div class="players">
-                    <label for="xPlayer">X Player Name:</label>
-                    <input type="text" id="xPlayer" class="player" name="X">
+                    <div class="player">
+                        <label for="xPlayer">X Player Name:</label>
+                        <input type="text" id="xPlayer" class="player" name="X">
+                    </div>
+                    <div class="player">
+                        <label for="oPlayer">O Player Name:</label>
+                        <input type="text" id="oPlayer" class="player" name="O">
+                    </div>
                 </div>
-                <div class="players">
-                    <label for="oPlayer">O Player Name:</label>
-                    <input type="text" id="oPlayer" class="player" name="O">
-                </div>
-
+                <button class="btn" id="startGame">start Game</button>
             </div>
             <div class="btn" id="start">
                 <button id="startBtn">Start game</button>
