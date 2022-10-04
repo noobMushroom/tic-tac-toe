@@ -14,7 +14,7 @@ const Player = (name, marker, round) => {
 // this function customize board
 const Board = (() => {
 
-   //*grabbing important html divs and creating divs for name of players.
+   //*grabbing important html divs 
 
    // this is the main div
    const showDiv = document.getElementById("tic-tac-toe");
@@ -28,13 +28,18 @@ const Board = (() => {
    const xPlayer = document.getElementById('xPlayer')
    const oPlayer = document.getElementById('oPlayer')
 
-   //creating element to show name and marker on the display 
-   const playersDiv = document.createElement("div");
-   playersDiv.classList.add('playersDiv')
-   const opponentDiv = document.createElement("div");
-   opponentDiv.classList.add('opponentDiv')
-   showDiv.appendChild(playersDiv)
-   showDiv.appendChild(opponentDiv)
+
+   // grabbing important elements to show player info
+   const playersDiv = document.getElementById('playerInfo')
+   const playerName = document.getElementById("player_name")
+   const playerMarker = document.getElementById("player_marker")
+   const playerRoundWon = document.getElementById('playerRoundWon')
+   // grabbing important element to show opponent info
+   const opponentDiv = document.getElementById("opponentInfo")
+   const opponentName = document.getElementById("opponentName")
+   const opponentMarker = document.getElementById("opponentMarker")
+   const opponentRoundWon = document.getElementById("opponentRoundWon")
+
 
    //*moves array to input players move
    let moves = ['', '', '', '', '', '', '', '', '']
@@ -48,6 +53,8 @@ const Board = (() => {
 
    //* Players array this will have players information
    let players = []
+
+
 
 
 
@@ -74,36 +81,51 @@ const Board = (() => {
 
    // function to display to show player info in the display
    const showPlayerInfo = () => {
-      playersDiv.innerHTML = `${(players[0].name).toUpperCase()} ${players[0].marker} ${players[0].roundWon}`
-      opponentDiv.innerHTML = `${(players[1].name).toUpperCase()} ${players[1].marker} ${players[1].roundWon}`
+      playerName.innerHTML = players[0].name.toUpperCase()
+      playerMarker.innerHTML = players[0].marker.toUpperCase()
+      playerRoundWon.innerHTML = `Round Won: ${players[0].roundWon}`
+
+      opponentName.innerHTML = players[1].name.toUpperCase()
+      opponentMarker.innerHTML = players[1].marker.toUpperCase()
+      opponentRoundWon.innerHTML = `Round Won: ${players[1].roundWon}`
    }
 
 
-   //hopefully this will be able to start new game
+   //*New game function and it do a lot of things 
    const newGame = () => {
+
+      // grabbing pop up menu
       const winnerDiv = document.getElementById("popUp")
       const new_game = document.getElementById('new_game')
       const playersDiv = document.getElementById('playersDiv')
       const startGameBtn = document.getElementById("startGame")
 
+      // new game button inside the pop up when it will be pressed it will ask for user info
       new_game.addEventListener("click", () => {
+         // removing winning pop up class and adding asking for player info
          winnerDiv.classList.remove("open-popup")
          playersDiv.classList.add('choice-popup')
+
+         // removing value from input boxes
+         xPlayer.value = ''
+         oPlayer.value = ''
+
+         // button from players div to take information 
          startGameBtn.addEventListener('click', () => {
+
+            // changing all values to default 
             isPressed = false
             marker = ''
             players = []
             moves = ['', '', '', '', '', '', '', '', '']
             playersDiv.classList.remove("choice-popup")
-            console.log("i am the inner sole")
             gameBoardDiv.innerHTML = ''
             createPlayers()
             showPlayerInfo()
             board()
             Cells()
          })
-         xPlayer.value = ''
-         oPlayer.value = ''
+
       })
    };
 
@@ -119,7 +141,7 @@ const Board = (() => {
       const winnerDiv = document.getElementById("popUp")
       reset.addEventListener('click', () => {
          winnerDiv.classList.remove("open-popup")
-         gameBoardDiv.innerHTML = ''
+         gameBoardDiv.innerHTML = ''// to clear the cells 
          board()
          Cells()
          showPlayerInfo()
@@ -134,6 +156,7 @@ const Board = (() => {
          boardDiv.value = i
          boardDiv.name = 'unClicked';
          boardDiv.classList.add('boardCells')
+         boardDiv.setAttribute('id', `cell${i}`)
          gameBoardDiv.appendChild(boardDiv);
       }
    }
@@ -153,9 +176,10 @@ const Board = (() => {
    // this function is for divs clicks and do different tasks 
    const Cells = () => {
 
+
       // initially setting first player color
       if (isPressed == false) {
-         opponentDiv.style.color=''
+         opponentDiv.style.color = ''
          playersDiv.style.color = 'red'
       }
 
@@ -165,7 +189,7 @@ const Board = (() => {
          element.addEventListener('click', () => {
             if (element.name == 'unClicked') {
                turn()// calling turn function to check which player turn 
-               currentPlayer()
+               currentPlayer()// changing current player
 
                Logic.input(element, marker, moves)
                Logic.whoWon(players)// checking who won and passing players array 
@@ -182,9 +206,6 @@ const Board = (() => {
 // *this function checks the logic the game. 
 const Logic = (() => {
    let winner = ''// checks who won
-
-
-
 
    // this function show's the winner name on the display and takes array as an argument
    const whoWon = (players) => {
@@ -274,16 +295,10 @@ const Logic = (() => {
       } else if (marker === 'O') {
          e.innerHTML = '<img src="images/O.png" height="100%" width="100%">'
       }
-
    }
 
    return { input, whoWon }
 })()
-
-
-
-
-
 
 // this function sets the board 
 const GameBoard = (() => {
@@ -301,19 +316,16 @@ const GameBoard = (() => {
    const Game = () => {
       const startBtn = document.getElementById('startBtn')
       const playersDiv = document.getElementById('playersDiv')
-
       startBtn.addEventListener("click", () => {
          playersDiv.classList.add('choice-popup')
       })
    }
 
    const startGame = () => {
-
       const startGameBtn = document.getElementById("startGame")
       const playersDiv = document.getElementById('playersDiv')
       startGameBtn.addEventListener('click', () => {
          playersDiv.classList.remove("choice-popup")
-
          setBoard()
       })
    }
