@@ -1,6 +1,3 @@
-// todo last scary task in js is to start game again
-
-
 // this function will create players
 const Player = (name, marker, round) => {
    const getName = () => name;
@@ -13,11 +10,6 @@ const Player = (name, marker, round) => {
       roundWon: totalRoundWon()
    }
 }
-
-
-
-
-
 
 // this function customize board
 const Board = (() => {
@@ -57,7 +49,7 @@ const Board = (() => {
    //* Players array this will have players information
    let players = []
 
-   
+
 
    // this function shows the color of player of current player on the screen. 
    const currentPlayer = () => {
@@ -88,7 +80,7 @@ const Board = (() => {
 
 
    //hopefully this will be able to start new game
-   const newGame = (round) => {
+   const newGame = () => {
       const winnerDiv = document.getElementById("popUp")
       const new_game = document.getElementById('new_game')
       const playersDiv = document.getElementById('playersDiv')
@@ -98,12 +90,10 @@ const Board = (() => {
          winnerDiv.classList.remove("open-popup")
          playersDiv.classList.add('choice-popup')
          startGameBtn.addEventListener('click', () => {
-            isPressed=false
-            round=0
-            players=[]
-            moves=['', '', '', '', '', '', '', '', '']
-            playersDiv.innerHTML=''
-            opponentDiv.innerHTML=''
+            isPressed = false
+            marker = ''
+            players = []
+            moves = ['', '', '', '', '', '', '', '', '']
             playersDiv.classList.remove("choice-popup")
             console.log("i am the inner sole")
             gameBoardDiv.innerHTML = ''
@@ -112,6 +102,8 @@ const Board = (() => {
             board()
             Cells()
          })
+         xPlayer.value = ''
+         oPlayer.value = ''
       })
    };
 
@@ -140,7 +132,7 @@ const Board = (() => {
       for (let i = 0; i <= 8; i++) {
          const boardDiv = document.createElement("div");
          boardDiv.value = i
-         boardDiv.click = true;
+         boardDiv.name = 'unClicked';
          boardDiv.classList.add('boardCells')
          gameBoardDiv.appendChild(boardDiv);
       }
@@ -163,7 +155,7 @@ const Board = (() => {
 
       // initially setting first player color
       if (isPressed == false) {
-
+         opponentDiv.style.color=''
          playersDiv.style.color = 'red'
       }
 
@@ -171,10 +163,13 @@ const Board = (() => {
       const buttons = document.querySelectorAll('.boardCells')
       buttons.forEach(element => {
          element.addEventListener('click', () => {
-            turn()// calling turn function to check which player turn 
-            currentPlayer()
-            Logic.input(element, marker, moves)
-            Logic.whoWon(players)// checking who won and passing players array 
+            if (element.name == 'unClicked') {
+               turn()// calling turn function to check which player turn 
+               currentPlayer()
+
+               Logic.input(element, marker, moves)
+               Logic.whoWon(players)// checking who won and passing players array 
+            }
          })
       });
    }
@@ -187,21 +182,16 @@ const Board = (() => {
 // *this function checks the logic the game. 
 const Logic = (() => {
    let winner = ''// checks who won
-   
-   // number of rounds
-   let round = 0//displays the number of round
 
-   
+
+
 
    // this function show's the winner name on the display and takes array as an argument
    const whoWon = (players) => {
       if (winner != '') {
-         round += 1 // changing the value of rounds
          //grabbing important elements to show the winner and round
          const winnerDiv = document.getElementById("popUp")
          const winnerName = document.getElementById("winner")
-         const roundDiv = document.getElementById("round")
-         roundDiv.innerHTML = round
          winnerDiv.classList.add("open-popup")
          // calling reset button functions
          Board.resetBtn()
@@ -276,16 +266,15 @@ const Logic = (() => {
    // *this function changes the inner html of buttons/cells of game board and change the value of moves array(log the moves in moves array) and changes the value of click so the button is disabled. and it also call winner function and checks if someone won.
 
    const input = (e, marker, moves) => {
-      if (e.click == true) {
-         moves[e.value] = marker
-         e.click = false
-         Winner(moves)
-         if (marker === "X") {
-            e.innerHTML = '<img src="images/x.jpg" height="100%" width="100%" >'
-         } else if (marker === 'O') {
-            e.innerHTML = '<img src="images/O.png" height="100%" width="100%">'
-         }
+      moves[e.value] = marker
+      e.name = "clicked"
+      Winner(moves)
+      if (marker === "X") {
+         e.innerHTML = '<img src="images/x.jpg" height="100%" width="100%" >'
+      } else if (marker === 'O') {
+         e.innerHTML = '<img src="images/O.png" height="100%" width="100%">'
       }
+
    }
 
    return { input, whoWon }
@@ -300,13 +289,13 @@ const Logic = (() => {
 const GameBoard = (() => {
 
    const btn = document.getElementById('start')
-
    // this function sets the board and calls different functions 
    const setBoard = () => {
       Board.createPlayers()
       Board.showPlayerInfo()
       Board.board()
       Board.Cells()
+
       btn.innerHTML = ''
    }
    const Game = () => {
@@ -319,10 +308,12 @@ const GameBoard = (() => {
    }
 
    const startGame = () => {
+
       const startGameBtn = document.getElementById("startGame")
       const playersDiv = document.getElementById('playersDiv')
       startGameBtn.addEventListener('click', () => {
          playersDiv.classList.remove("choice-popup")
+
          setBoard()
       })
    }

@@ -79,7 +79,7 @@
 .popup{
     width: 500px;
     height: 400px;
-    background-color: rgb(128, 128, 128);
+    background-color: rgba(128, 128, 128, 0);
     border-radius: 6px;
     position: absolute;
     top: 0;
