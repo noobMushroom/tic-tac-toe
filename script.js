@@ -13,10 +13,9 @@ const Player = (name, marker, round) => {
 
 // this function customize board
 const Board = (() => {
-
    //*grabbing important html divs 
 
-   // this is the main div
+   // this is the main div everything will go inside this div
    const showDiv = document.getElementById("tic-tac-toe");
 
    // creating gameBoardDiv this will contain small cells or boxes
@@ -29,18 +28,18 @@ const Board = (() => {
    const oPlayer = document.getElementById('oPlayer')
 
 
-   // grabbing important elements to show player info
+   // grabbing important elements to show player info on the display
    const playersDiv = document.getElementById('playerInfo')
    const playerName = document.getElementById("player_name")
    const playerMarker = document.getElementById("player_marker")
    const playerRoundWon = document.getElementById('playerRoundWon')
-   // grabbing important element to show opponent info
+   // grabbing important element to show opponent info on the display
    const opponentDiv = document.getElementById("opponentInfo")
    const opponentName = document.getElementById("opponentName")
    const opponentMarker = document.getElementById("opponentMarker")
    const opponentRoundWon = document.getElementById("opponentRoundWon")
 
-   // decide games
+   // decide games if it's innerhtml changes the cells won't click
    const winner = document.getElementById('winner')
 
 
@@ -57,25 +56,22 @@ const Board = (() => {
    //* Players array this will have players information
    let players = []
 
-   // is game on deciede clicks and it's value come from winner div
+   // is game on deciede clicks and it's value come from winners div
    let isGameOn = ''
 
-
-
-   // this function shows the color of player of current player on the screen. 
+   // this function shows the color of player of current player( whose turn) on the screen. 
    const currentPlayer = () => {
       let current_player = marker//setting current player as marker which will be X and O      
       if (current_player === 'O') {
-         opponentDiv.style.color = ''
-         playersDiv.style.color = 'red'
+         opponentDiv.classList.remove("player_Info_focus")
+         playersDiv.classList.add("player_Info_focus")
       } else if (current_player === "X") {
-         playersDiv.style.color = ''
-         opponentDiv.style.color = 'red'
+         playersDiv.classList.remove("player_Info_focus")
+         opponentDiv.classList.add("player_Info_focus")
       }
-
    }
 
-   // this function creates div and push players value on the players array
+   // this function create players and push players value on the players array
    const createPlayers = () => {
       const player = Player(xPlayer.value, xPlayer.name, 0)
       players.push(player)
@@ -83,8 +79,16 @@ const Board = (() => {
       players.push(opponent)
    };
 
-   // function to display to show player info in the display
+   
+   // grabbing elements to set attribute to show them on the screen
+   const playerInfoDiv=document.getElementById('playerInfo')
+   const opponentInfoDiv=document.getElementById("opponentInfo")
+
+   // function to display to show player info in the display like round name and marker
    const showPlayerInfo = () => {
+      playerInfoDiv.setAttribute('style', 'background-color: #67e8f9;width: 330px; height: 140px; padding: 30px;')
+      opponentInfoDiv.setAttribute('style', 'background-color: #67e8f9;width: 330px; height: 140px; padding: 30px;')
+
       playerName.innerHTML = players[0].name.toUpperCase()
       playerMarker.innerHTML = players[0].marker.toUpperCase()
       playerRoundWon.innerHTML = `Round Won: ${players[0].roundWon}`
@@ -95,9 +99,8 @@ const Board = (() => {
    }
 
 
-   //*New game function and it do a lot of things 
+   //*New game function it starts new game and sets the board for new game. 
    const newGame = () => {
-
       // grabbing pop up menu
       const winnerDiv = document.getElementById("popUp")
       const new_game = document.getElementById('new_game')
@@ -135,8 +138,7 @@ const Board = (() => {
    };
 
 
-   //* restart button
-
+   //* restart button it will restart the board 
    const resetBtn = () => {
       moves = ['', '', '', '', '', '', '', '', '']
 
@@ -180,17 +182,16 @@ const Board = (() => {
       }
    }
 
-
-
-   // this function is for divs clicks and do different tasks 
+   // this function is for divs clicks and call different functions
    const Cells = () => {
+      
       // initially setting first player color
       if (isPressed == false) {
-         opponentDiv.style.color = ''
-         playersDiv.style.color = 'red'
+         opponentDiv.classList.remove("player_Info_focus")
+         playersDiv.classList.add("player_Info_focus")
       }
-      // grabbing buttons/cells
 
+      // grabbing buttons/cells
       const buttons = document.querySelectorAll('.boardCells')
       buttons.forEach(element => {
          element.addEventListener('click', () => {
@@ -224,7 +225,7 @@ const Logic = (() => {
          const winnerDiv = document.getElementById("popUp")
          const winnerName = document.getElementById("winner")
          winnerDiv.classList.add("open-popup")
-         // calling reset button functions
+         // calling reset button and new game functions so the player can choose.
          Board.resetBtn()
          Board.newGame()
          // changing winner value and changing round won by players
@@ -310,10 +311,10 @@ const Logic = (() => {
       Winner(moves)
       if (marker === "X") {
          e.innerHTML = 'X'
-         e.setAttribute('style', "font-size: 60px; font-weight: 900;color:red;")
+         e.setAttribute('style', "color:#111827;")
       } else if (marker === 'O') {
          e.innerHTML = 'O'
-         e.setAttribute('style', "font-size: 60px; font-weight: 900;color:green;")
+         e.setAttribute('style', "color:#27272a;")
       }
    }
 
@@ -322,7 +323,7 @@ const Logic = (() => {
 
 // this function sets the board 
 const GameBoard = (() => {
-
+   const humanVsComputerBtn= document.getElementById("computer")
    const btn = document.getElementById('start')
    // this function sets the board and calls different functions 
    const setBoard = () => {
@@ -330,7 +331,7 @@ const GameBoard = (() => {
       Board.showPlayerInfo()
       Board.board()
       Board.Cells()
-
+      humanVsComputerBtn.innerHTML=''
       btn.innerHTML = ''
    }
    const Game = () => {

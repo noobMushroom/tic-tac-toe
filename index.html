@@ -8,11 +8,14 @@
     <title>Document</title>
     <script src="script.js" defer></script>
     <link rel="stylesheet" href="style.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Nunito:wght@900&display=swap');
+    </style>
 </head>
 
 <body>
     <header class="head">
-        <h1>Tic Tac Toe <i><u>By Mushroom</u></i></h1>
+        <h1>Tic-Tac-Toe</h1>
     </header>
     <div class="container">
         <div id="tic-tac-toe" class="mainDiv">
@@ -32,25 +35,28 @@
             </div>
 
             <div class="playersInfo">
-                <div class="playerInfo" id="playerInfo">
+                <div class="player_Info" id="playerInfo">
                     <div class="playerMarker" id="player_marker"></div>
                     <div class="playerName" id="player_name"></div>
                     <div class="roundWon" id="playerRoundWon"></div>
                 </div>
-                <div class="opponentInfo" id="opponentInfo">
+                <div class="player_Info" id="opponentInfo">
                     <div class="playerMarker" id="opponentMarker"></div>
                     <div class="playerName" id="opponentName"></div>
                     <div class="roundWon" id="opponentRoundWon"></div>
                 </div>
             </div>
-            <div class="btn" id="start">
-                <button id="startBtn">Human VS Human</button>
+            <div class="human" id="start">
+                <button id="startBtn" class="btn">Human VS Human</button>
+            </div>
+            <div class="computer" id="computer">
+                <button id="Computer_vs_human" class="btn">Human VS Computer</button>
             </div>
 
             <div class="popup" id="popUp">
                 <div class="winner" id="winner" name="clicked"></div>
-                <button class="btn" id="new_game">new game</button>
-                <button class="btn" id="new_round">play again</button>
+                <button class="btn" id="new_game">NEW GAME</button>
+                <button class="btn" id="new_round">NEW ROUND</button>
             </div>
         </div>
     </div>
