@@ -40,6 +40,9 @@ const Board = (() => {
    const opponentMarker = document.getElementById("opponentMarker")
    const opponentRoundWon = document.getElementById("opponentRoundWon")
 
+   // decide games
+   const winner = document.getElementById('winner')
+
 
    //*moves array to input players move
    let moves = ['', '', '', '', '', '', '', '', '']
@@ -54,7 +57,8 @@ const Board = (() => {
    //* Players array this will have players information
    let players = []
 
-
+   // is game on deciede clicks and it's value come from winner div
+   let isGameOn = ''
 
 
 
@@ -117,6 +121,7 @@ const Board = (() => {
             isPressed = false
             marker = ''
             players = []
+            winner.innerHTML = ''
             moves = ['', '', '', '', '', '', '', '', '']
             playersDiv.classList.remove("choice-popup")
             gameBoardDiv.innerHTML = ''
@@ -142,6 +147,8 @@ const Board = (() => {
       reset.addEventListener('click', () => {
          winnerDiv.classList.remove("open-popup")
          gameBoardDiv.innerHTML = ''// to clear the cells 
+         isGameOn = ''
+         winner.innerHTML = ''
          board()
          Cells()
          showPlayerInfo()
@@ -173,28 +180,31 @@ const Board = (() => {
       }
    }
 
+
+
    // this function is for divs clicks and do different tasks 
    const Cells = () => {
-
-
       // initially setting first player color
       if (isPressed == false) {
          opponentDiv.style.color = ''
          playersDiv.style.color = 'red'
       }
+      // grabbing buttons/cells
 
-      // grabbing buttons/cells 
       const buttons = document.querySelectorAll('.boardCells')
       buttons.forEach(element => {
          element.addEventListener('click', () => {
-            if (element.name == 'unClicked') {
-               turn()// calling turn function to check which player turn 
-               currentPlayer()// changing current player
-
-               Logic.input(element, marker, moves)
-               Logic.whoWon(players)// checking who won and passing players array 
+            isGameOn = winner.innerHTML
+            if (isGameOn === '') {
+               if (element.name == 'unClicked') {
+                  turn()// calling turn function to check which player turn 
+                  currentPlayer()// changing current player
+                  Logic.input(element, marker, moves)
+                  Logic.whoWon(players)// checking who won and passing players array 
+               }
             }
          })
+
       });
    }
    return { board, Cells, resetBtn, createPlayers, showPlayerInfo, newGame }
@@ -221,11 +231,19 @@ const Logic = (() => {
          if (winner === "X") {
             winner = ''
             players[0].roundWon += 1
-            winnerName.innerHTML = `Hurray! ${(players[0].name).toUpperCase()} Won congratulations`
+            if (players[0].name != '') {
+               winnerName.innerHTML = `Hurray! ${(players[0].name).toUpperCase()} Won congratulations`
+            }else{
+               winnerName.innerHTML = `Hurray! ${(players[0].marker).toUpperCase()} Won congratulations`
+            }
          } else if (winner === "O") {
             winner = ''
             players[1].roundWon += 1
-            winnerName.innerHTML = `Hurray! ${(players[1].name).toUpperCase()} Won congratulations`
+            if (players[1].name != '') {
+               winnerName.innerHTML = `Hurray! ${(players[1].name).toUpperCase()} Won congratulations`
+            }else{
+               winnerName.innerHTML = `Hurray! ${(players[1].marker).toUpperCase()} Won congratulations`
+            }
          } else if (winner === "draw") {
             winner = ''
             winnerName.innerHTML = `It was a draw`
@@ -291,9 +309,11 @@ const Logic = (() => {
       e.name = "clicked"
       Winner(moves)
       if (marker === "X") {
-         e.innerHTML = '<img src="images/x.jpg" height="100%" width="100%" >'
+         e.innerHTML = 'X'
+         e.setAttribute('style', "font-size: 60px; font-weight: 900;color:red;")
       } else if (marker === 'O') {
-         e.innerHTML = '<img src="images/O.png" height="100%" width="100%">'
+         e.innerHTML = 'O'
+         e.setAttribute('style', "font-size: 60px; font-weight: 900;color:green;")
       }
    }
 
